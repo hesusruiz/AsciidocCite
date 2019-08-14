@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"regexp"
 	"sort"
 	"strings"
@@ -128,11 +129,18 @@ func buildAsciidocBibligraphyItem(citekey string, index int, result ResultType) 
 
 func main() {
 
+	// Require the first argument to be the name of a file to process
+	if len(os.Args) < 2 {
+		fmt.Println("A file name is required")
+		os.Exit(1)
+	}
+	fileName := string(os.Args[1])
+
 	// Define the regex for detecting the citekeys in the Asciidoc document
 	re := regexp.MustCompile(`<<.+?>>`)
 
 	// Read the file entirely in memory
-	content, err := ioutil.ReadFile("README.asc")
+	content, err := ioutil.ReadFile(fileName)
 	if err != nil {
 		log.Fatal(err)
 	}
