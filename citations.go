@@ -90,7 +90,7 @@ func getBibliographyFromCitekey(citekey string) (ResultType, error) {
 
 }
 
-func buildAsciidocBibligraphyItem(citekey string, index int, result ResultType) string {
+func buildAsciidocBibliographyItem(citekey string, index int, result ResultType) string {
 
 	var b strings.Builder
 
@@ -148,18 +148,25 @@ func main() {
 	// Find all citation keys
 	citekeys := re.FindAll([]byte(content), -1)
 
+	// Sort alfabetically the citekeys
 	sort.Slice(citekeys, func(i, j int) bool {
 		return string(citekeys[i]) < string(citekeys[j])
 	})
 
+	// Print the bibliography to stdout (can be copy/pasted)
 	for i, citekey := range citekeys {
 		c := strings.Trim(string(citekey), "<>")
+
+		// get the bibliography data from local Zotero
 		r, err := getBibliographyFromCitekey(c)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		s := buildAsciidocBibligraphyItem(c, i, r)
+		// Build the text line for the item
+		s := buildAsciidocBibliographyItem(c, i, r)
+
+		// Print to stdout
 		fmt.Printf("%s\n\n", s)
 
 	}
